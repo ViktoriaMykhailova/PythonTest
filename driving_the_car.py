@@ -1,7 +1,5 @@
 import random
 
-import pandas as pd
-
 
 class Car:
 
@@ -20,9 +18,9 @@ class Car:
             self.fuel = self.fuel - (distance * self.economy / 100)
             return self.mileage
 
-    def distance_left(self):
+    def get_distance_left(self):
         expect_distance = self.fuel / (self.economy / 100)
-        return expect_distance
+        return round(expect_distance, 0)
 
     def fuel_up(self):
         self.fuel += 20
@@ -36,32 +34,26 @@ list_economy = list(range(9, 16))
 list_drive = []
 list_cars = []
 
-i = 1
-for i in range(1, 11):
+for _ in range(1, 11):
     model_car = random.choice(list_models)
     list_cars.append(model_car)
-    i += 1
-
-print(list_cars)
 
 for j in list_cars:
     car_color = random.choice(list_colors)
     car_economy = random.choice(list_economy)
-    car_2 = Car(j, car_color, car_economy)
-    print(f"Car: {car_2.model}, color: {car_2.color}, economy: {car_2.economy} l/100km, mileage: {car_2.mileage} km, "
-          f"fuel: {car_2.fuel} l")
-    print(f"The car drove {car_2.drive(200)} km")
-    print(f"Left distance", round(car_2.distance_left(), 0))
-    print(f"The car was filled with 20 l. Liters in tank after refueling {car_2.fuel_up()} l")
-    print(f"Distance after refuel", round(car_2.distance_left(), 0))
-    print(f"The car drove another 100 km. Total distance - {car_2.drive(100)} km")
-    print(f"Fuel left after drive - {car_2.fuel} l")
-    list_drive.append([[car_2.model], [car_2.color], [car_2.economy], [car_2.mileage], [car_2.fuel]])
+    car_1 = Car(j, car_color, car_economy)
+    car_1.drive(200)
+    car_1.fuel_up()
+    car_1.drive(100)
+    list_drive.append(car_1)
 
-print(list_drive)
+max_fuel_car = None
+max_distance_left = 0
 
-df = pd.DataFrame(list_drive)
-print(df)
-max_fuel = df[4].max()
-# max_fuel = df[df['fuel'] == df['fuel'].max()]
-print(f"Maximum amount of fuel remaining after drive: {max_fuel} l")
+for car in list_drive:
+    distance_left = car.get_distance_left()
+    if max_distance_left > distance_left:
+        max_distance_left = distance_left
+    max_fuel_car = car
+
+print(max_fuel_car.model, max_fuel_car.color, max_fuel_car.economy, max_fuel_car.mileage, max_fuel_car.fuel)
